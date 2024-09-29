@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// App.js
+import { useState } from 'react';
+import ApplicationUserForm from './components/ApplicationUserForm';
+import PresentationList from './components/PresentationList';
+import Whiteboard from './components/Whiteboard';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [nickname, setNickname] = useState('');
+  const [currentPresentation, setCurrentPresentation] = useState(null);
+
+  const handleUserSubmit = (userData) => {
+    setNickname(userData.nickname);
+  };
+
+  const handleJoinPresentation = (presentation) => {
+    setCurrentPresentation(presentation);
+  };
+
+  const handleCreatePresentation = (presentation) => {
+    setCurrentPresentation(presentation);
+  };
+
+  const handleAddSlide = (newSlide) => {
+    setCurrentPresentation((prev) => ({
+      ...prev,
+      slides: [...prev.slides, newSlide],
+    }));
+  };
+
+  if (!nickname) {
+    return <ApplicationUserForm onSubmit={handleUserSubmit} />;
+  }
+
+  if (!currentPresentation) {
+    return (
+      <PresentationList
+        onJoin={handleJoinPresentation}
+        onCreate={handleCreatePresentation}
+      />
+    );
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Whiteboard
+      presentationId={currentPresentation.id}
+      slides={currentPresentation.slides}
+      onSlideAdded={handleAddSlide}
+      users={[{ nickname }]} // Подключенные пользователи
+    />
+  );
 }
 
-export default App
+export default App;
