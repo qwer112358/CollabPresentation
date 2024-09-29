@@ -88,14 +88,14 @@ namespace PresentationApp.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Points = table.Column<string>(type: "text", nullable: false),
-                    Stroke = table.Column<string>(type: "text", nullable: false),
-                    Tool = table.Column<string>(type: "text", nullable: false),
+                    Points = table.Column<string>(type: "text", nullable: true),
+                    Stroke = table.Column<string>(type: "text", nullable: true),
+                    Tool = table.Column<string>(type: "text", nullable: true),
                     StartX = table.Column<float>(type: "real", nullable: true),
                     StartY = table.Column<float>(type: "real", nullable: true),
                     EndX = table.Column<float>(type: "real", nullable: true),
                     EndY = table.Column<float>(type: "real", nullable: true),
-                    SlideId = table.Column<Guid>(type: "uuid", nullable: true)
+                    SlideId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,7 +104,8 @@ namespace PresentationApp.Migrations
                         name: "FK_Lines_Slides_SlideId",
                         column: x => x.SlideId,
                         principalTable: "Slides",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

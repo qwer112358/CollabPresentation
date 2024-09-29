@@ -115,7 +115,7 @@ function Whiteboard({
       if (connection) {
         signalRService.sendDrawAction('user1', [newLine]);
       }
-      lineService.saveLine(newLine);
+      lineService.saveLine(newLine, currentSlide.id);
     } else if (['rect', 'circle', 'arrow'].includes(selectedTool)) {
       const shape = drawingService.endShapeDrawing();
       setLines([...lines, shape]);
@@ -134,7 +134,7 @@ function Whiteboard({
         endY: Number(shape.endY),
       };
 
-      lineService.saveLine(shapeToSave).catch((err) => {
+      lineService.saveLine(shapeToSave, currentSlide.id).catch((err) => {
         console.error('Error saving data to DB: ', err);
       });
     }

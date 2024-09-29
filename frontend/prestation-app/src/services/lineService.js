@@ -1,5 +1,5 @@
 class LineService {
-  async saveLine(line) {
+  async saveLine(line, slideId) {
     const lineToSave = {
       id: 0,
       points: line.points ? JSON.stringify(line.points) : null,
@@ -9,6 +9,7 @@ class LineService {
       startY: line.startY || 0,
       endX: line.endX || 0,
       endY: line.endY || 0,
+      slideId: slideId,
     };
 
     try {

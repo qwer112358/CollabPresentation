@@ -12,7 +12,7 @@ using PresentationApp.Data;
 namespace PresentationApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240929161917_Init")]
+    [Migration("20240929200527_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -57,10 +57,9 @@ namespace PresentationApp.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("Points")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("SlideId")
+                    b.Property<Guid>("SlideId")
                         .HasColumnType("uuid");
 
                     b.Property<float?>("StartX")
@@ -70,11 +69,9 @@ namespace PresentationApp.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("Stroke")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Tool")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -145,9 +142,13 @@ namespace PresentationApp.Migrations
 
             modelBuilder.Entity("PresentationApp.Models.Line", b =>
                 {
-                    b.HasOne("PresentationApp.Models.Slide", null)
+                    b.HasOne("PresentationApp.Models.Slide", "Slide")
                         .WithMany("Lines")
-                        .HasForeignKey("SlideId");
+                        .HasForeignKey("SlideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Slide");
                 });
 
             modelBuilder.Entity("PresentationApp.Models.PresentationUser", b =>
