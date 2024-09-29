@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -68,7 +69,6 @@ namespace PresentationApp.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     PresentationId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
                     Order = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -82,11 +82,40 @@ namespace PresentationApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Lines",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Points = table.Column<string>(type: "text", nullable: false),
+                    Stroke = table.Column<string>(type: "text", nullable: false),
+                    Tool = table.Column<string>(type: "text", nullable: false),
+                    StartX = table.Column<float>(type: "real", nullable: true),
+                    StartY = table.Column<float>(type: "real", nullable: true),
+                    EndX = table.Column<float>(type: "real", nullable: true),
+                    EndY = table.Column<float>(type: "real", nullable: true),
+                    SlideId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Lines", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Lines_Slides_SlideId",
+                        column: x => x.SlideId,
+                        principalTable: "Slides",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationUsers_Nickname",
                 table: "ApplicationUsers",
-                column: "Nickname",
-                unique: true);
+                column: "Nickname");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Lines_SlideId",
+                table: "Lines",
+                column: "SlideId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PresentationUsers_UserId",
@@ -102,6 +131,9 @@ namespace PresentationApp.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Lines");
+
             migrationBuilder.DropTable(
                 name: "PresentationUsers");
 

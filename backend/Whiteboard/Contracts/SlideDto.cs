@@ -2,9 +2,9 @@
 
 namespace PresentationApp.Contracts;
 
-public record SlideDto(string Content, int Order)
+public record SlideDto(List<Line> Lines, int Order)
 {
-	public SlideDto() : this(string.Empty, 1) { }
+	public SlideDto() : this(new List<Line>(), 1) { }
 
-	public SlideDto(Slide slide) : this(slide.Content, slide.Order) { }
+	public SlideDto(Slide slide) : this(slide.Lines, slide.Order) { }
 }

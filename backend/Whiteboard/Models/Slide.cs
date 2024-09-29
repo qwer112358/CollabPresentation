@@ -9,15 +9,15 @@ public class Slide
 	
 	[JsonIgnore]
 	public Presentation? Presentation { get; set; }
-	public string Content { get; set; }
+	public List<Line> Lines { get; set; } = new List<Line>();
 	public int Order { get; set; } = 1;
 
 	public Slide() { }
 
-	public Slide(Guid presentationId, string content, int order)
+	public Slide(Guid presentationId, List<Line> content, int order)
 	{
 		PresentationId = presentationId;
-		Content = content;
+		Lines = content;
 		Order = order;
 	}
 }

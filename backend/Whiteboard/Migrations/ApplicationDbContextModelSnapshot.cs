@@ -34,10 +34,51 @@ namespace PresentationApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Nickname")
-                        .IsUnique();
+                    b.HasIndex("Nickname");
 
                     b.ToTable("ApplicationUsers");
+                });
+
+            modelBuilder.Entity("PresentationApp.Models.Line", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<float?>("EndX")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("EndY")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Points")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("SlideId")
+                        .HasColumnType("uuid");
+
+                    b.Property<float?>("StartX")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("StartY")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Stroke")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Tool")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SlideId");
+
+                    b.ToTable("Lines");
                 });
 
             modelBuilder.Entity("PresentationApp.Models.Presentation", b =>
@@ -86,10 +127,6 @@ namespace PresentationApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
@@ -101,6 +138,13 @@ namespace PresentationApp.Migrations
                     b.HasIndex("PresentationId");
 
                     b.ToTable("Slides");
+                });
+
+            modelBuilder.Entity("PresentationApp.Models.Line", b =>
+                {
+                    b.HasOne("PresentationApp.Models.Slide", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("SlideId");
                 });
 
             modelBuilder.Entity("PresentationApp.Models.PresentationUser", b =>
@@ -143,6 +187,11 @@ namespace PresentationApp.Migrations
                     b.Navigation("PresentationUsers");
 
                     b.Navigation("Slides");
+                });
+
+            modelBuilder.Entity("PresentationApp.Models.Slide", b =>
+                {
+                    b.Navigation("Lines");
                 });
 #pragma warning restore 612, 618
         }

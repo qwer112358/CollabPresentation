@@ -3,37 +3,34 @@ using Microsoft.EntityFrameworkCore;
 using PresentationApp.Data;
 using PresentationApp.Models;
 
-namespace PresentationApp.Controllers
+namespace PresentationApp.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class WhiteboardController : ControllerBase
 {
-	/*[ApiController]
-	[Route("api/[controller]")]
-	public class WhiteboardController : ControllerBase
+	private readonly ApplicationDbContext _context;
+
+	public WhiteboardController(ApplicationDbContext context)
 	{
-		private readonly ApplicationDbContext _dbContext;
+		_context = context;
+	}
 
-		public WhiteboardController(ApplicationDbContext context)
-		{
-			_dbContext = context;
-		}
+	[HttpGet]
+	public async Task<IActionResult> GetWhiteboardLines()
+	{
+		var lines = await _context.Lines.ToListAsync();
+		return Ok(lines);
+	}
 
-		// Получение всех линий с доски
-		[HttpGet]
-		public async Task<IActionResult> GetWhiteboardLines()
-		{
-			var lines = await _dbContext.Lines.ToListAsync();
-			return Ok(lines);
-		}
+	[HttpPost]
+	public async Task<IActionResult> SaveLine([FromBody] List<Line> lines)
+	{
+		if (lines == null || lines.Count == 0)
+			return BadRequest("Invalid data.");
 
-		// Сохранение новых линий на доске
-		[HttpPost]
-		public async Task<IActionResult> SaveLine([FromBody] List<Line> lines)
-		{
-			if (lines == null || lines.Count == 0)
-				return BadRequest("Invalid data.");
-
-			await _dbContext.Lines.AddRangeAsync(lines);
-			await _dbContext.SaveChangesAsync();
-			return Ok();
-		}
-	}*/
+		await _context.Lines.AddRangeAsync(lines);
+		await _context.SaveChangesAsync();
+		return Ok();
+	}
 }

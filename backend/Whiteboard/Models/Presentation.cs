@@ -15,7 +15,7 @@ public class Presentation
 	{
 		Title = title;
 		OwnerName = ownerName;
-		Slides.Add(new Slide(Id, "", 1));
+		Slides.Add(new Slide(Id, new List<Line>(), 1));
 		PresentationUsers = new List<PresentationUser>
 		{
 			new PresentationUser
@@ -26,7 +26,7 @@ public class Presentation
 		};
 	}
 
-	public void AddSlide() => Slides.Add(new Slide(Id, "", Slides.Count + 1));
+	public void AddSlide() => Slides.Add(new Slide(Id, new List<Line>(), Slides.Count + 1));
 
 	public void RemoveSlide(int slideIndex) => Slides.RemoveAt(slideIndex);
 

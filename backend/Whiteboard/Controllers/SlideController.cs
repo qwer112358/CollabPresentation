@@ -46,7 +46,7 @@ public class SlideController : ControllerBase
 		{
 			return NotFound("Slide not found for update.");
 		}
-		slide.Content = slideDto.Content;
+		slide.Lines = slideDto.Lines;
 		slide.Order = slideDto.Order;
 		_dbContext.Entry(slide).State = EntityState.Modified;
 		try

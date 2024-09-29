@@ -3,13 +3,14 @@ import axios from 'axios';
 
 function ApplicationUserForm({ onSubmit }) {
   const [nickname, setNickname] = useState('');
+  const port = 'http://localhost:5000/api/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // Отправка никнейма на сервер
       const response = await axios.post(
-        'http://localhost:5000/api/ApplicationUser?nickname=${nickname}',
+        `${port}ApplicationUser?nickname=${nickname}`,
         { nickname }
       );
       onSubmit(response.data); // Передача данных обратно в App

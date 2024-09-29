@@ -4,14 +4,12 @@ import axios from 'axios';
 function PresentationList({ onJoin, onCreate }) {
   const [presentations, setPresentations] = useState([]);
   const [newTitle, setNewTitle] = useState('');
+  const port = 'http://localhost:5000/api/';
 
   useEffect(() => {
-    // Получение списка презентаций с сервера при загрузке компонента
     const fetchPresentations = async () => {
       try {
-        const response = await axios.get(
-          'http://localhost:5000/api/presentations'
-        );
+        const response = await axios.get(`${port}Presentation`);
         setPresentations(response.data);
       } catch (error) {
         console.error('Error fetching presentations:', error);
@@ -24,13 +22,9 @@ function PresentationList({ onJoin, onCreate }) {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      // Создание новой презентации на сервере
-      const response = await axios.post(
-        'http://localhost:5000/api/presentations',
-        {
-          title: newTitle,
-        }
-      );
+      const response = await axios.post(`${port}Presentation`, {
+        title: newTitle,
+      });
       setPresentations([...presentations, response.data]);
       onCreate(response.data);
     } catch (error) {

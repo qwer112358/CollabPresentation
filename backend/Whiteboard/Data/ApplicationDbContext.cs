@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext
 	public DbSet<Slide> Slides { get; set; }
 	public DbSet<PresentationUser> PresentationUsers { get; set; }
 	public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+	public DbSet<Line> Lines { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
@@ -31,6 +32,9 @@ public class ApplicationDbContext : DbContext
 			.HasForeignKey(pu => pu.UserId);
 
 		builder.Entity<ApplicationUser>().HasKey(u => u.Id);
+		builder.Entity<ApplicationUser>()
+			.HasIndex(u => u.Nickname);
+			//.IsUnique();
 
 		builder.Entity<Slide>()
 			.HasOne(s => s.Presentation)

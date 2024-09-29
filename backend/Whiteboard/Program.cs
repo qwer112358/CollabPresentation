@@ -38,5 +38,5 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 
 app.MapControllers();
-app.MapHub<PresentationHub>("/hubs/presentation");
+app.MapHub<WhiteboardHub>("/whiteboardHub");
 app.Run();
