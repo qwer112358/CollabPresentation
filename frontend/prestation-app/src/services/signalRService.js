@@ -6,9 +6,13 @@ class SignalRService {
     this.port = 'http://localhost:5000/';
   }
 
-  async startConnection() {
+  async startConnection(presentationId, slideId) {
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.port}whiteboardHub`)
+      .withUrl(`${this.port}whiteboardHub?slideId=${slideId}`, {
+        accessTokenFactory: () => {
+          return presentationId;
+        },
+      })
       .build();
 
     try {

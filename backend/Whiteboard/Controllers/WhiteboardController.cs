@@ -17,11 +17,15 @@ public class WhiteboardController : ControllerBase
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> GetWhiteboardLines()
+	public async Task<IActionResult> GetWhiteboardLines(string slideId)
 	{
-		var lines = await _context.Lines.ToListAsync();
+		var lines = await _context.Lines
+			.Where(l => l.SlideId.ToString() == slideId)
+			.ToListAsync();
+
 		return Ok(lines);
 	}
+
 
 	[HttpPost]
 	public async Task<IActionResult> SaveLine([FromBody] List<Line> lines)

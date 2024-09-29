@@ -14,7 +14,7 @@ function Whiteboard({
   users,
   connection,
 }) {
-  const [selectedTool, setSelectedTool] = useState('brush');
+  const [selectedTool, setSelectedTool] = useState('pencil');
   const [currentSlide, setCurrentSlide] = useState(slides[0]);
   const port = 'http://localhost:5000/api/';
   const [drawingData, setDrawingData] = useState([]);
@@ -22,25 +22,9 @@ function Whiteboard({
   const [lines, setLines] = useState([]);
   const [color, setColor] = useState('#000000');
   const [currentShape, setCurrentShape] = useState(null);
-  let currentSlideId = slides[0].id;
-  console.log('slideId', currentSlideId);
 
   useEffect(() => {
     if (connection) {
-      connection.on('ReceiveSlide', (newSlide) => {
-        onSlideAdded(newSlide);
-      });
-
-      connection.on('ReceiveDrawing', (data) => {
-        setDrawingData((prev) => [...prev, data]);
-      });
-
-      signalRService.startConnection();
-      signalRService.onReceiveDrawAction((user, newLines) => {
-        drawingService.addExternalDraw(newLines);
-        setLines([...drawingService.getLines()]);
-      });
-
       signalRService.onLoadPreviousDrawings((savedLines) => {
         drawingService.addExternalDraw(
           savedLines.map((line) => ({
@@ -50,6 +34,13 @@ function Whiteboard({
         );
         setLines([...drawingService.getLines()]);
       });
+
+      signalRService.onReceiveDrawAction((user, newLines) => {
+        drawingService.addExternalDraw(newLines);
+        setLines([...drawingService.getLines()]);
+      });
+
+      signalRService.startConnection(presentationId, currentSlide.id);
     }
 
     return () => {
@@ -58,7 +49,7 @@ function Whiteboard({
         connection.off('ReceiveDrawing');
       }
     };
-  }, [connection, onSlideAdded]);
+  }, [connection, currentSlide.id]);
 
   const handleAddSlide = async () => {
     try {

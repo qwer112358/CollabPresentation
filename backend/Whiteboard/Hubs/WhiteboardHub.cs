@@ -27,10 +27,18 @@ public class WhiteboardHub : Hub
 
 	public override async Task OnConnectedAsync()
 	{
-		var lines = await _context.Lines.ToListAsync();
-		await Clients.Caller.SendAsync("LoadPreviousDrawings", lines);
+		string slideId = Context.GetHttpContext().Request.Query["slideId"];
+
+		if (!string.IsNullOrEmpty(slideId))
+		{
+			var lines = await _context.Lines
+				.Where(l => l.SlideId.ToString() == slideId)
+				.ToListAsync();
+			await Clients.Caller.SendAsync("LoadPreviousDrawings", lines);
+		}
 		await base.OnConnectedAsync();
 	}
+
 
 	public async Task SendDrawAction(string user, string actionData)
 	{
