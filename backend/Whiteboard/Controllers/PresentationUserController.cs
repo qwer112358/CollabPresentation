@@ -22,7 +22,7 @@ namespace PresentationApp.Controllers
 		{
 			var presentation = await _dbContext.Presentations
 				.Include(p => p.PresentationUsers)
-				.ThenInclude(pu => pu.User)  // Включаем пользователей
+				.ThenInclude(pu => pu.User) 
 				.FirstOrDefaultAsync(p => p.Id == presentationId);
 
 			if (presentation == null) return NotFound("Presentation not found.");
