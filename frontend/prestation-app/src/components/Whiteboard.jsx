@@ -6,6 +6,9 @@ import Shapes from './Shapes';
 import drawingService from '../services/drawingService';
 import signalRService from '../services/signalRService';
 import lineService from '../services/lineService';
+import { Button, Box, VStack } from '@chakra-ui/react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import SlidePanel from './SlidePanel';
 
 function Whiteboard({
   presentationId,
@@ -14,9 +17,9 @@ function Whiteboard({
   users,
   connection,
 }) {
+  const port = 'http://localhost:5000/api/';
   const [selectedTool, setSelectedTool] = useState('pencil');
   const [currentSlide, setCurrentSlide] = useState(slides[0]);
-  const port = 'http://localhost:5000/api/';
   const [drawingData, setDrawingData] = useState([]);
   const stageRef = useRef(null);
   const [lines, setLines] = useState([]);
@@ -56,9 +59,9 @@ function Whiteboard({
       const response = await axios.post(`${port}Slide/${presentationId}`, {});
       const newSlide = response.data;
 
-      if (connection) {
+      /*if (connection) {
         await connection.invoke('BroadcastSlide', presentationId, newSlide);
-      }
+      }*/
 
       onSlideAdded(newSlide);
     } catch (error) {
@@ -132,44 +135,60 @@ function Whiteboard({
   };
 
   return (
-    <div className="whiteboard-container">
-      <ToolBar setTool={setSelectedTool} setColor={setColor} />
-      <div className="slides-panel">
-        {slides.map((slide, index) => (
-          <button key={index} onClick={() => setCurrentSlide(slide)}>
-            Slide {index + 1}
-          </button>
-        ))}
-        <button onClick={handleAddSlide}>Add Slide</button>
-      </div>
-      <div className="whiteboard">
-        <Stage
-          width={800}
-          height={600}
-          onMouseDown={handleMouseDown}
-          onMousemove={handleMouseMove}
-          onMouseup={handleMouseUp}
-          ref={stageRef}
-          style={{ border: '1px solid black' }}
+    <Box
+      className="whiteboard-container"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      height="85vh"
+    >
+      <Box w="full" mb={4}>
+        <ToolBar setTool={setSelectedTool} setColor={setColor} />
+      </Box>
+      <Box display="flex" w="full" flex="1">
+        <SlidePanel
+          slides={slides}
+          setCurrentSlide={setCurrentSlide}
+          handleAddSlide={handleAddSlide}
+          flex="0 0 200px"
+        />
+        <Box className="whiteboard" flex="1" display="flex">
+          <Stage
+            width={800}
+            height={700}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            ref={stageRef}
+            style={{ border: '1px solid black', flex: '1' }}
+          >
+            <Layer>
+              <Rect width={1366} height={768} fill="white" />
+              {drawingData.map((data, index) => (
+                <Rect key={index} {...data} />
+              ))}
+              <Shapes lines={lines} currentShape={currentShape} />
+            </Layer>
+          </Stage>
+        </Box>
+        <Box
+          className="users-panel"
+          w="200px"
+          p={4}
+          bg="gray.100"
+          borderRadius="md"
+          border="1px solid"
+          borderColor="gray.300"
         >
-          <Layer>
-            <Rect width={800} height={600} fill="white" />
-            {drawingData.map((data, index) => (
-              <Rect key={index} {...data} />
+          <h5>Connected Users</h5>
+          <ul>
+            {users.map((user, index) => (
+              <li key={index}>{user.nickname}</li>
             ))}
-            <Shapes lines={lines} currentShape={currentShape} />
-          </Layer>
-        </Stage>
-      </div>
-      <div className="users-panel">
-        <h3>Connected Users</h3>
-        <ul>
-          {users.map((user, index) => (
-            <li key={index}>{user.nickname}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
+          </ul>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 

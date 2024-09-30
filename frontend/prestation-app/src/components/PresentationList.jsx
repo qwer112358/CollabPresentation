@@ -1,7 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  List,
+  ListItem,
+  Text,
+  VStack,
+  HStack,
+} from '@chakra-ui/react';
 
-function PresentationList({ onJoin, onCreate }) {
+function PresentationList({ onJoin, onCreate, nickname }) {
   const [presentations, setPresentations] = useState([]);
   const [newTitle, setNewTitle] = useState('');
   const port = 'http://localhost:5000/api/';
@@ -33,32 +45,58 @@ function PresentationList({ onJoin, onCreate }) {
   };
 
   return (
-    <div>
-      <h2>Existing Presentations</h2>
-      <ul>
-        {presentations.map((presentation, index) => (
-          <li key={index}>
-            <span>
-              {presentation.title} (Owner: {presentation.ownerName})
-            </span>
-            <button onClick={() => onJoin(presentation)}>Join</button>
-          </li>
-        ))}
-      </ul>
+    <VStack spacing={6} align="stretch">
+      <Box as="form" onSubmit={handleCreate}>
+        <HStack justify="space-between" mb={4}>
+          <Text fontSize="xl" fontWeight="bold" mb={4}>
+            Create a New Presentation
+          </Text>
+          <Text fontSize="lg" color="gray.500">
+            Logged in as: {nickname}
+          </Text>
+        </HStack>
+        <FormControl id="newTitle" isRequired>
+          <FormLabel>Presentation Title:</FormLabel>
+          <Input
+            type="text"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            placeholder="Enter presentation title"
+          />
+        </FormControl>
+        <Button type="submit" colorScheme="green" mt={4}>
+          Create
+        </Button>
+      </Box>
 
-      <h2>Create a New Presentation</h2>
-      <form onSubmit={handleCreate}>
-        <label htmlFor="newTitle">Presentation Title:</label>
-        <input
-          id="newTitle"
-          type="text"
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          required
-        />
-        <button type="submit">Create</button>
-      </form>
-    </div>
+      <Box>
+        <Text fontSize="xl" fontWeight="bold" mb={4}>
+          Existing Presentations
+        </Text>
+        <List spacing={3}>
+          {presentations.map((presentation, index) => (
+            <ListItem
+              key={index}
+              p={4}
+              borderWidth="1px"
+              borderRadius="lg"
+              shadow="md"
+            >
+              <Text>
+                {presentation.title} (Owner: {presentation.ownerName})
+              </Text>
+              <Button
+                mt={2}
+                colorScheme="blue"
+                onClick={() => onJoin(presentation)}
+              >
+                Join
+              </Button>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    </VStack>
   );
 }
 

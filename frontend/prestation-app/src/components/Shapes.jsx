@@ -4,7 +4,6 @@ import { Line, Rect, Circle, Arrow } from 'react-konva';
 const Shapes = ({ lines, currentShape, onShapeClick }) => {
   return (
     <>
-      {/* Отрисовка всех нарисованных линий и фигур */}
       {lines.map((line, i) => {
         if (line.tool === 'rect') {
           return (
@@ -16,8 +15,8 @@ const Shapes = ({ lines, currentShape, onShapeClick }) => {
               height={Math.abs(line.endY - line.startY)}
               stroke={line.stroke}
               strokeWidth={line.strokeWidth}
-              onClick={() => onShapeClick(i)} // Добавляем клик для выбора фигуры
-              draggable // Добавляем возможность перетаскивания
+              onClick={() => onShapeClick(i)}
+              draggable
             />
           );
         } else if (line.tool === 'circle') {
@@ -33,8 +32,8 @@ const Shapes = ({ lines, currentShape, onShapeClick }) => {
               radius={radius}
               stroke={line.stroke}
               strokeWidth={line.strokeWidth}
-              onClick={() => onShapeClick(i)} // Добавляем клик для выбора фигуры
-              draggable // Добавляем возможность перетаскивания
+              onClick={() => onShapeClick(i)}
+              draggable
             />
           );
         } else if (line.tool === 'arrow') {
@@ -44,8 +43,8 @@ const Shapes = ({ lines, currentShape, onShapeClick }) => {
               points={[line.startX, line.startY, line.endX, line.endY]}
               stroke={line.stroke}
               strokeWidth={line.strokeWidth}
-              onClick={() => onShapeClick(i)} // Добавляем клик для выбора фигуры
-              draggable // Добавляем возможность перетаскивания
+              onClick={() => onShapeClick(i)}
+              draggable
             />
           );
         } else {
@@ -58,14 +57,13 @@ const Shapes = ({ lines, currentShape, onShapeClick }) => {
               tension={0.5}
               lineCap="round"
               lineJoin="round"
-              onClick={() => onShapeClick(i)} // Добавляем клик для выбора фигуры
-              draggable // Добавляем возможность перетаскивания
+              onClick={() => onShapeClick(i)}
+              draggable
             />
           );
         }
       })}
 
-      {/* Отрисовка текущей фигуры */}
       {currentShape && currentShape.tool === 'rect' && (
         <Rect
           x={Math.min(currentShape.startX, currentShape.endX)}
@@ -74,7 +72,7 @@ const Shapes = ({ lines, currentShape, onShapeClick }) => {
           height={Math.abs(currentShape.endY - currentShape.startY)}
           stroke={currentShape.stroke}
           strokeWidth={currentShape.strokeWidth}
-          dash={[10, 5]} // Пример штриховки для текущей рисуемой фигуры
+          dash={[10, 5]}
         />
       )}
       {currentShape && currentShape.tool === 'circle' && (
@@ -87,7 +85,7 @@ const Shapes = ({ lines, currentShape, onShapeClick }) => {
           )}
           stroke={currentShape.stroke}
           strokeWidth={currentShape.strokeWidth}
-          dash={[10, 5]} // Пример штриховки для текущей рисуемой фигуры
+          dash={[10, 5]}
         />
       )}
       {currentShape && currentShape.tool === 'arrow' && (
@@ -100,7 +98,7 @@ const Shapes = ({ lines, currentShape, onShapeClick }) => {
           ]}
           stroke={currentShape.stroke}
           strokeWidth={currentShape.strokeWidth}
-          dash={[10, 5]} // Пример штриховки для текущей рисуемой фигуры
+          dash={[10, 5]}
         />
       )}
     </>

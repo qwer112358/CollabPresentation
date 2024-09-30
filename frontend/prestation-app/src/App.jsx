@@ -1,20 +1,22 @@
-// App.js
 import { useState, useEffect } from 'react';
+import { ChakraProvider, Box, VStack, Center } from '@chakra-ui/react';
 import ApplicationUserForm from './components/ApplicationUserForm';
 import PresentationList from './components/PresentationList';
 import Whiteboard from './components/Whiteboard';
+import WhiteboardHeader from './components/WhiteboardHeader';
 import * as signalR from '@microsoft/signalr';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [nickname, setNickname] = useState('');
   const [currentPresentation, setCurrentPresentation] = useState(null);
   const [connection, setConnection] = useState(null);
-  const port = 'http://localhost:5000/api/';
+  const port = 'http://localhost:5000/';
 
   useEffect(() => {
     if (nickname) {
       const newConnection = new signalR.HubConnectionBuilder()
-        .withUrl(`http://localhost:5000/whiteboardHub`)
+        .withUrl(`${port}whiteboardHub`)
         .withAutomaticReconnect()
         .build();
 
@@ -41,7 +43,6 @@ function App() {
 
       connection.on('ReceiveDrawing', (drawingData) => {
         console.log('Received drawing data:', drawingData);
-        // Здесь можно обработать полученные данные рисунка
       });
     }
   }, [connection]);
@@ -79,28 +80,43 @@ function App() {
     }));
   };
 
-  if (!nickname) {
-    return <ApplicationUserForm onSubmit={handleUserSubmit} />;
-  }
-
-  if (!currentPresentation) {
-    return (
-      <PresentationList
-        onJoin={handleJoinPresentation}
-        onCreate={handleCreatePresentation}
-      />
-    );
-  }
-  console.log(currentPresentation);
-
   return (
-    <Whiteboard
-      presentationId={currentPresentation.id}
-      slides={currentPresentation.slides}
-      onSlideAdded={handleAddSlide}
-      users={[{ nickname }]}
-      connection={connection}
-    />
+    <ChakraProvider>
+      {!nickname ? (
+        <Center height="100vh">
+          <VStack spacing={6} textAlign="center">
+            <ApplicationUserForm onSubmit={handleUserSubmit} />
+          </VStack>
+        </Center>
+      ) : !currentPresentation ? (
+        <Box className="container mt-5">
+          <PresentationList
+            onJoin={handleJoinPresentation}
+            onCreate={handleCreatePresentation}
+            nickname={nickname}
+          />
+        </Box>
+      ) : (
+        <Box className="container mt-5">
+          <VStack spacing={8} align="stretch">
+            <WhiteboardHeader
+              title={currentPresentation.title}
+              nickname={nickname}
+              onLeave={handleLeavePresentation}
+            />
+            <Box borderWidth="1px" borderRadius="lg" p={6} shadow="md" flex="1">
+              <Whiteboard
+                presentationId={currentPresentation.id}
+                slides={currentPresentation.slides}
+                onSlideAdded={handleAddSlide}
+                users={[{ nickname }]}
+                connection={connection}
+              />
+            </Box>
+          </VStack>
+        </Box>
+      )}
+    </ChakraProvider>
   );
 }
 
