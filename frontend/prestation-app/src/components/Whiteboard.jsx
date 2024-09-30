@@ -6,7 +6,7 @@ import Shapes from './Shapes';
 import drawingService from '../services/drawingService';
 import signalRService from '../services/signalRService';
 import lineService from '../services/lineService';
-import { Button, Box, VStack } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SlidePanel from './SlidePanel';
 
@@ -14,7 +14,7 @@ function Whiteboard({
   presentationId,
   slides,
   onSlideAdded,
-  users,
+  initialUsers,
   connection,
 }) {
   const port = 'http://localhost:5000/api/';
@@ -25,6 +25,9 @@ function Whiteboard({
   const [lines, setLines] = useState([]);
   const [color, setColor] = useState('#000000');
   const [currentShape, setCurrentShape] = useState(null);
+  const [users, setUsers] = useState(initialUsers);
+  console.log('initialUsers', initialUsers);
+  console.log(users);
 
   useEffect(() => {
     if (connection) {
@@ -43,6 +46,11 @@ function Whiteboard({
         setLines([...drawingService.getLines()]);
       });
 
+      connection.on('UserJoined', (nickname) => {
+        setUsers((prevUsers) => [...prevUsers, { nickname }]);
+        console.log(`${nickname} has joined the presentation.`);
+      });
+
       signalRService.startConnection(presentationId, currentSlide.id);
     }
 
@@ -50,6 +58,7 @@ function Whiteboard({
       if (connection) {
         connection.off('ReceiveSlide');
         connection.off('ReceiveDrawing');
+        connection.off('UserJoined');
       }
     };
   }, [connection, currentSlide.id]);
@@ -134,6 +143,7 @@ function Whiteboard({
     }
   };
 
+  console.log('users: ', users);
   return (
     <Box
       className="whiteboard-container"

@@ -54,6 +54,8 @@ function App() {
   const handleJoinPresentation = async (presentation) => {
     if (connection) {
       await connection.invoke('JoinPresentation', presentation.id, nickname);
+      console.log(presentation);
+      console.log(nickname);
       setCurrentPresentation(presentation);
     }
   };
@@ -109,7 +111,7 @@ function App() {
                 presentationId={currentPresentation.id}
                 slides={currentPresentation.slides}
                 onSlideAdded={handleAddSlide}
-                users={[{ nickname }]}
+                initialUsers={[{ nickname: nickname }]}
                 connection={connection}
               />
             </Box>

@@ -36,6 +36,7 @@ function PresentationList({ onJoin, onCreate, nickname }) {
     try {
       const response = await axios.post(`${port}Presentation`, {
         title: newTitle,
+        ownerName: nickname,
       });
       setPresentations([...presentations, response.data]);
       onCreate(response.data);
