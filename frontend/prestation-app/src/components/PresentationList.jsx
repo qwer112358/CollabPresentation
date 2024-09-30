@@ -83,9 +83,8 @@ function PresentationList({ onJoin, onCreate, nickname }) {
               borderRadius="lg"
               shadow="md"
             >
-              <Text>
-                {presentation.title} (Owner: {presentation.ownerName})
-              </Text>
+              <Text>Presentation: {presentation.title}</Text>
+              <Text>Owner: {presentation.ownerName}</Text>
               <Button
                 mt={2}
                 colorScheme="blue"

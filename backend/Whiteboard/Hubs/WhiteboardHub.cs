@@ -15,12 +15,18 @@ public class WhiteboardHub : Hub
 
 	public async Task JoinPresentation(string presentationId, string user)
 	{
+		var presentation = await _context.Presentations.FindAsync(Guid.Parse(presentationId));
+		var appUser = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Nickname == user);
+		presentation?.AddUser(appUser!, Models.UserRole.Editor);
+		var userList = presentation?.PresentationUsers.Select(u => u.User.Nickname);
 		await Groups.AddToGroupAsync(Context.ConnectionId, presentationId);
 		await Clients.Group(presentationId).SendAsync("UserJoined", user);
 	}
 
 	public async Task LeavePresentation(string presentationId, string user)
 	{
+		var presentation = await _context.Presentations.FindAsync(Guid.Parse(presentationId));
+		var appUser = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Nickname == user);
 		await Groups.RemoveFromGroupAsync(Context.ConnectionId, presentationId);
 		await Clients.Group(presentationId).SendAsync("UserLeft", user);
 	}

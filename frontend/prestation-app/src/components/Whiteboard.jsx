@@ -25,9 +25,7 @@ function Whiteboard({
   const [lines, setLines] = useState([]);
   const [color, setColor] = useState('#000000');
   const [currentShape, setCurrentShape] = useState(null);
-  const [users, setUsers] = useState(initialUsers);
-  console.log('initialUsers', initialUsers);
-  console.log(users);
+  const [users, setUsers] = useState(initialUsers || []);
 
   useEffect(() => {
     if (connection) {
@@ -143,7 +141,6 @@ function Whiteboard({
     }
   };
 
-  console.log('users: ', users);
   return (
     <Box
       className="whiteboard-container"
